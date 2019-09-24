@@ -16,18 +16,17 @@ dir_path_database = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT
 counter = 0
 
 for i in range(50): #50 objects, 3 images per time
-    #print(i+1)
+    print('i =',i+1)
     img1 = cv2.imread(dir_path_database + str(i+1) + "_1.jpg", cv2.IMREAD_GRAYSCALE)
-    sift = cv2.xfeatures2d.SIFT_create(contrastThreshold=0.2, edgeThreshold = 9.3)
+    sift = cv2.xfeatures2d.SIFT_create(300) #strongest 300 hundred
     kp1, des1 = sift.detectAndCompute(img1, None)
-    des = des1
+    des = np.vstack(des, des1)
     img2 = cv2.imread(dir_path_database + str(i+1) + "_2.jpg", cv2.IMREAD_GRAYSCALE)
     kp2, des2 = sift.detectAndCompute(img2, None)
     img3 = cv2.imread(dir_path_database + str(i+1) + "_3.jpg", cv2.IMREAD_GRAYSCALE)
     kp3, des3 = sift.detectAndCompute(img3, None)
 
     for j in [des2, des3]:
-
         bf = cv2.BFMatcher()
         matches = bf.knnMatch(des1, j, k=2)
 
@@ -36,15 +35,18 @@ for i in range(50): #50 objects, 3 images per time
             if m.distance < 0.75 * n.distance: #if it is a match
                 good.append(m.queryIdx) #saving index for removing it
         if i == 31:
-            print(len(good))
+            print('len good =', len(good))
         m2 = np.delete(j, good, 0) #removing matching features in same object
         des = np.vstack((des, m2))
 
-    #print(des.shape)
+    print('#desc per obj =', des.shape[0]) #number of descriptors for an object
     counter += des.shape[0]
+    print(' ')
+    des = [] #clear des
 
-
-print(counter/50)
+#avg n°feature extracted per database object
+avg_feature_database_object = counter / 50
+print('Avg # feature per object = ', avg_feature_database_object)
 
 
 
