@@ -25,26 +25,27 @@ for i in range(1):
     sift3 = cv2.xfeatures2d.SIFT_create(contrastThreshold=0.2, edgeThreshold=9.3)
     kp3, des3 = sift3.detectAndCompute(img3, None)
 
+    for j in [des2,des3]:
 
-    bf = cv2.BFMatcher()
-    matches = bf.knnMatch(des1,des2, k=2)
+        bf = cv2.BFMatcher()
+        matches = bf.knnMatch(des1,j, k=2)
 
-    good = []
-    for m, n in matches:
-        if m.distance < 0.75 * n.distance:
-            good.append(m.queryIdx)
-    m2 = np.delete(des2, good, axis=0)
-    des=np.vstack((des,m2))
+        good = []
+        for m, n in matches:
+            if m.distance < 0.75 * n.distance:
+                good.append(m.queryIdx)
+        m2 = np.delete(j, good,0)
+        des=np.vstack((des,m2))
 
-    bf = cv2.BFMatcher()
-    matches = bf.knnMatch(des1, des3, k=2)
-
-    good = []
-    for m, n in matches:
-        if m.distance < 0.75 * n.distance:
-            good.append(m.queryIdx)
-    m2 = np.delete(des3, good, axis=0)
-    des = np.vstack((des, m2))
+    # bf = cv2.BFMatcher()
+    # matches = bf.knnMatch(des1, des3, k=2)
+    #
+    # good = []
+    # for m, n in matches:
+    #     if m.distance < 0.75 * n.distance:
+    #         good.append(m.queryIdx)
+    # m2 = np.delete(des3, good, axis=0)
+    # des = np.vstack((des, m2))
     
 
 
