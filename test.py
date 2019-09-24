@@ -57,7 +57,7 @@ for i in range(50):
     sift_i = cv2.xfeatures2d.SIFT_create(contrastThreshold = 0.19, edgeThreshold = 9.3)
     kp_i, des_i = sift_i.detectAndCompute(img_i, None)
     query_des[i] = des_i
-    #np.savetxt('data' '.csv', (col1_array, col2_array, col3_array), delimiter=',')
+    #np.savetxt('obj'+str(i+1)+'_t1.csv', query_des[i][], delimiter=',')
 
     tot_features = tot_features + query_des[i].shape[0]
 
