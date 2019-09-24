@@ -5,6 +5,9 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 
+n_keypoints = 250 #strongest keypoints to keep
+
+
 # (a)
 class object():
     def __init__(self,_obj_id,_des_id):
@@ -22,11 +25,13 @@ class object():
 
 #dir_path_database = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/server/obj"
 dir_path_database = 'Data2/server/obj'
+
 counter = 0
-abc={}
+database_des = {} #dictionary of database objects containing descriptors
+
 for i in range(50): #50 objects, 3 images per time
     img1 = cv2.imread(dir_path_database + str(i+1) + "_1.jpg", cv2.IMREAD_GRAYSCALE)
-    sift = cv2.xfeatures2d.SIFT_create(250) #strongest 250
+    sift = cv2.xfeatures2d.SIFT_create(n_keypoints) 
     kp1, des1 = sift.detectAndCompute(img1, None)
     des = des1
     img2 = cv2.imread(dir_path_database + str(i+1) + "_2.jpg", cv2.IMREAD_GRAYSCALE)
@@ -45,19 +50,35 @@ for i in range(50): #50 objects, 3 images per time
         m2 = np.delete(j, good, 0) #removing matching features in same object
         des = np.vstack((des, m2))
 
-    abc[i]=object(i+1, des)
-    counter+=abc[i].__len__()
-
-
-
-
+    database_des[i] = object(i+1, des)
+    counter += database_des[i].__len__()
     
-    
-print(abc[1].des_id)
 #avg n°feature extracted per database object
-avg_feature_database_object = counter / 50
-print('Avg # feature per object = ', avg_feature_database_object)
+avg_feature_database_object = counter / len(database_des)
+print('Avg # feature per database object = ', avg_feature_database_object)
+'''
+# (b) Extract few hundreds features from each query image and save them separately, avg n°features per query object
+# dir_path_query = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/client/obj"
+dir_path_query ='Data2/client/obj'
 
+query_des = {} #dictionary of query objects containing descriptors
+tot_features = 0
+
+for i in range(50):
+    img_i = cv2.imread(dir_path_query+str(i+1)+"_t1.jpg", cv2.IMREAD_GRAYSCALE)
+#    sift_i = cv2.xfeatures2d.SIFT_create(contrastThreshold = 0.19, edgeThreshold = 9.3)
+    sift_i = cv2.xfeatures2d.SIFT_create(n_keypoints)
+    kp_i, des_i = sift_i.detectAndCompute(img_i, None)
+
+    query_des[i] = object(i+1,des_i)
+    tot_features += query_des[i].__len__()
+
+#avg n°feature extracted per query object
+avg_feature_query_object = tot_features / len(query_des)
+print("Avg # feature per query object = ", avg_feature_query_object)
+
+
+'''
 
 
 
