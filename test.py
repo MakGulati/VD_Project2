@@ -1,48 +1,57 @@
-'''import cv2 as cv
-import matplotlib.pyplot as plt
-i = cv.imread('D:/Federico/Desktop/test/obj1_5.jpg')
-cv.imshow('img',i)
-cv.waitKey(0)
-'''
-
 import numpy as np
-import os
-import glob
-import imageio
-import cv2 as cv
+
+import cv2
 
 import matplotlib.pyplot as plt
 
-img_dir = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/server/"
 
 
-des = []
 
-data_path = os.path.join(img_dir,'*g')
-files = glob.glob(data_path)
-#data = []
-#m = np.empty()
 
 #for f1 in files:
-dir = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/server/obj"
+# dir = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/server/obj"
+dir='Data2/server/obj'
+for i in range(1):
 
-for i in range(2):
-    final = np.empty((2*750, 128))
 
-    for j in range(3):
-        img = cv.imread(dir+str(i+1)+"_"+str(j+1)+".jpg", cv.IMREAD_GRAYSCALE)
-        #data.append(img)
-        #cv.imshow('im', img)
-        #cv.waitKey(0)
-        sift = cv.xfeatures2d.SIFT_create(249) #strongest 150
-        sift = cv.xfeatures2d.SIFT_create(contrastThreshold=)
-        kp1, des1 = sift.detectAndCompute(img, None)
-        np.concatenate((final, des1), axis = 0)
+    img1 = cv2.imread(dir+str(i+1)+"_1.jpg", cv2.IMREAD_GRAYSCALE)
+    sift1 = cv2.xfeatures2d.SIFT_create(contrastThreshold=0.2, edgeThreshold=9.3)
+    kp1, des1 = sift1.detectAndCompute(img1, None)
+    des=des1
+    img2 = cv2.imread(dir + str(i+1) + "_2.jpg", cv2.IMREAD_GRAYSCALE)
+    sift2 = cv2.xfeatures2d.SIFT_create(contrastThreshold=0.2, edgeThreshold=9.3)
+    kp2, des2 = sift2.detectAndCompute(img2, None)
+    img3 = cv2.imread(dir + str(i + 1) + "_3.jpg", cv2.IMREAD_GRAYSCALE)
+    sift3 = cv2.xfeatures2d.SIFT_create(contrastThreshold=0.2, edgeThreshold=9.3)
+    kp3, des3 = sift3.detectAndCompute(img3, None)
 
-new = final.reshape(-1,750,128)
+
+    bf = cv2.BFMatcher()
+    matches = bf.knnMatch(des1,des2, k=2)
+
+    good = []
+    for m, n in matches:
+        if m.distance < 0.75 * n.distance:
+            good.append(m.queryIdx)
+    m2 = np.delete(des2, good, axis=0)
+    des=np.vstack((des,m2))
+
+    bf = cv2.BFMatcher()
+    matches = bf.knnMatch(des1, des3, k=2)
+
+    good = []
+    for m, n in matches:
+        if m.distance < 0.75 * n.distance:
+            good.append(m.queryIdx)
+    m2 = np.delete(des3, good, axis=0)
+    des = np.vstack((des, m2))
+    
+
+
+# new = final.reshape(-1,750,128)
 
 #print("printing lists in new line")
-print(final.shape)
-print(new.shape)
+print(des.shape)
+
 
 
