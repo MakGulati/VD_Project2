@@ -3,7 +3,8 @@
 
 import numpy as np
 import cv2
-import matplotlib.pyplot as plt
+from object import *
+from k_means import  *
 
 ## 2 IMAGE FEATURE EXTRACTION
 # (a) Extract few hundreds features from each database image and combine the ones for same object, avg n°features per database object
@@ -11,19 +12,6 @@ import matplotlib.pyplot as plt
 n_keypoints = 250  # strongest keypoints to keep
 
 
-class object():  # structure with list of SIFT keypoints per object with the object id
-    def __init__(self, _obj_id, _des_id):
-        self.obj_id = _obj_id
-        self.des_id = _des_id
-
-    def __len__(self):
-        return self.des_id.shape[0]
-
-    def get_des(self, _pos_id):
-        return self.des_id[_pos_id]
-
-    def __del__(self):
-        pass
 
 
 # directory path with database images
@@ -86,3 +74,5 @@ print("Avg # feature per query object = ", avg_feature_query_object)
 
 '''
 # 3 VOCABULARY TREE CONSTRUCTION
+
+hi_kmeans(database_des[1],3)
