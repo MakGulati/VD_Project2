@@ -56,7 +56,7 @@ dir_path_query ='Data2/client/obj'
 tot_features_query = 0 # counting total features of database for retrieving average
 query_des = {} # dictionary of query objects containing descriptors
 
-for i in range(50): # 50 query images 
+for i in range(50): # 50 query images
     img_i = cv2.imread(dir_path_query+str(i+1)+"_t1.jpg", cv2.IMREAD_GRAYSCALE)
 #   sift_i = cv2.xfeatures2d.SIFT_create(contrastThreshold = 0.19, edgeThreshold = 9.3)
     sift_i = cv2.xfeatures2d.SIFT_create(n_keypoints)
@@ -67,9 +67,9 @@ for i in range(50): # 50 query images
 
 # avg n°feature extracted per query object
 avg_feature_query_object = tot_features_query / len(query_des)
-print("Avg # feature per query object = ", avg_feature_query_object)
+print("Avg # feature per query object = ", avg_feature_qchild02.data(str(202))uery_object)
 '''
 
 # 3 VOCABULARY TREE CONSTRUCTION
 
-hi_kmeans(database_des[1], 3)
+hi_kmeans(database_des,3)
