@@ -67,9 +67,9 @@ for i in range(50): # 50 query images
 
 # avg n°feature extracted per query object
 avg_feature_query_object = tot_features_query / len(query_des)
-print("Avg # feature per query object = ", avg_feature_query_object)
+print("Avg # feature per query object = ", avg_feature_qchild02.data(str(202))uery_object)
 '''
 
 # 3 VOCABULARY TREE CONSTRUCTION
 
-hi_kmeans(database_des[1],3)
+hi_kmeans(database_des,3)
