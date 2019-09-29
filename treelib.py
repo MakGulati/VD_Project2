@@ -22,6 +22,8 @@ class Tree(object):
         @param children: sub node(s) of Tree, could be None, child (single) or children (multiple)
         '''
         self.data = data
+        # self.centroid=sum(data)/50
+        # self.score=
         self.__children = []
         self.__parent=None  #private parent attribute
         
@@ -40,7 +42,8 @@ class Tree(object):
             else:
                 raise TypeError('Child of Tree should be a Tree type')
     
-    
+    # def compute_IDF(self,):
+        
     def __setattr__(self, name, value):
         
             

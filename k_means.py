@@ -6,6 +6,7 @@ def hi_kmeans(_object, _b):
     X=_object[0].des_mat
     for i in range(1,50):
         X = np.vstack((X,_object[i].des_mat))
+#        print(X[i].obj_id)
 
     clusters = KMeans(n_clusters=_b, random_state=0).fit(X)
     y_kmeans=clusters.predict(X)
