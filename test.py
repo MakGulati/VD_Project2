@@ -5,11 +5,13 @@ import numpy as np
 import cv2
 from object import *
 from k_means import *
+from treelib import *
 
 ## 2 IMAGE FEATURE EXTRACTION
 # (a) Extract few hundreds features from each database image and combine the ones for same object, avg n°features per database object
 
 n_keypoints = 250  # strongest keypoints to keep
+b = 3 #n of brances (cluster) in each level of tree
 
 # directory path with database images
 dir_path_database = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/server/obj"
@@ -46,15 +48,6 @@ for i in range(50):  # 250 images with 50 objects, 3 images per object read at t
 avg_feature_database_object = tot_features_database / len(database_des)
 print('Avg # feature per database object = ', avg_feature_database_object)
 
-# des_list = []
-des_list = {}
-l=0
-for i in range(50):
-    for j in range (database_des[i].__len__()):
-        f = keypoint_with_id(database_des[i].get_des(j), i)
-        # des_list = np.append(des_list, f)
-        des_list[j+l]=f
-    l += database_des[i].__len__()-1
 
 '''
 # (b) Extract few hundreds features from each query image and save them separately, avg n°features per query object
@@ -81,5 +74,16 @@ print("Avg # feature per query object = ", avg_feature_qchild02.data(str(202))ue
 '''
 
 # 3 VOCABULARY TREE CONSTRUCTION
+# Assign document id to each descriptor and creating list of descriptors
+des_database_list = []
+#des_list = {}
+#l=0
+for i in range(50):
+    for j in range (database_des[i].__len__()):
+        des_database_list.append(keypoint_with_id(database_des[i].get_des(j), i))
 
-hi_kmeans(database_des,3)
+#setting root of tree
+first_node = Tree(des_database_list)
+
+#building tree
+hi_kmeans(des_database_list, b)  #need to add depth

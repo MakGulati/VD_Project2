@@ -2,15 +2,19 @@ from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 import numpy as np
 
-def hi_kmeans(_object, _b):
-    X=_object[0].des_mat
+def hi_kmeans(_des_database_list, _b): #need to add depth
+    '''    X=_object[0].des_mat
     for i in range(1,50):
         X = np.vstack((X,_object[i].des_mat))
-#        print(X[i].obj_id)
+    '''
+
+    X=[]
+    for i in range(len(_des_database_list)):
+        X.append(_des_database_list[i].vector)
 
     clusters = KMeans(n_clusters=_b, random_state=0).fit(X)
-    y_kmeans=clusters.predict(X)
-    print(X.shape[0])
+    y_kmeans = clusters.predict(X)
+    #print(X.shape[0])
     plt.scatter(X[:, 0], X[:, 127], c=y_kmeans, s=50, cmap='viridis')
 
     centers = clusters.cluster_centers_

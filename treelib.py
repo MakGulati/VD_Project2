@@ -25,7 +25,7 @@ class Tree(object):
         # self.centroid=sum(data)/50
         # self.score=
         self.__children = []
-        self.__parent=None  #private parent attribute
+        self.__parent = None  #private parent attribute
         
         if children: #construct a Tree with child or children
             if isinstance(children, Tree):
