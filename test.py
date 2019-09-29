@@ -46,6 +46,16 @@ for i in range(50):  # 250 images with 50 objects, 3 images per object read at t
 avg_feature_database_object = tot_features_database / len(database_des)
 print('Avg # feature per database object = ', avg_feature_database_object)
 
+# des_list = []
+des_list = {}
+l=0
+for i in range(50):
+    for j in range (database_des[i].__len__()):
+        f = keypoint_with_id(database_des[i].get_des(j), i)
+        # des_list = np.append(des_list, f)
+        des_list[j+l]=f
+    l += database_des[i].__len__()-1
+
 '''
 # (b) Extract few hundreds features from each query image and save them separately, avg n°features per query object
 

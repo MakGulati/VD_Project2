@@ -11,3 +11,15 @@ class object():  # structure with list of SIFT keypoints per object with the obj
 
     def __del__(self):
         pass
+
+class keypoint_with_id():
+    def __init__(self, _vector, _id):
+        self.vector = _vector
+        self.id = _id
+        
+    def __del__(self):
+        pass
+
+
+
+
