@@ -17,8 +17,8 @@ b = 3 # n of brances (cluster) in each level of tree
 depth = 2 # n of levels of tree
 
 # directory path with database images
-dir_path_database = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/server/obj"
-#dir_path_database = 'Data2/server/obj'
+# dir_path_database = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/server/obj"
+dir_path_database = 'Data2/server/obj'
 
 tot_features_database = 0  # counting total features of database for retrieving average
 des_database = {}  # dictionary of database objects containing descriptors
@@ -94,9 +94,10 @@ hi_kmeans(first_node, des_database_list, b, depth)  # b is number of clusters, d
 # seeing data in tree
 am = first_node.getChildren()
 test = am[0].data
+test2 = am[1].centroid
 
 # print tree
-first_node.nestedTree()
+#first_node.nestedTree()
 
 # 4 QUERYING
 #
