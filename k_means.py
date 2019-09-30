@@ -15,7 +15,7 @@ def hi_kmeans(_first_node, _des_database_list, _b, _depth):  # need to add depth
 
     kmeans = KMeans(n_clusters=_b, random_state=0).fit(X_new)
     kmeans_labels = kmeans.labels_
-    print(len(kmeans_labels))
+    #print(len(kmeans_labels))
 
     clusters = [[] for i in range(_b)]
 

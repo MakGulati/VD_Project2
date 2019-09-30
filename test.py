@@ -92,3 +92,5 @@ hi_kmeans(first_node, des_database_list, b, depth)  # b is number of clusters, d
 #seeing data in tree
 am = first_node.getChildren()
 test = am[0].data
+
+first_node.prettyTree()
