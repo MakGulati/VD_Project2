@@ -11,7 +11,8 @@ from treelib import *
 # (a) Extract few hundreds features from each database image and combine the ones for same object, avg n°features per database object
 
 n_keypoints = 200  # strongest keypoints to keep
-b = 3 #n of brances (cluster) in each level of tree
+b = 3 # n of brances (cluster) in each level of tree
+depth = 2 # n of levels of tree
 
 # directory path with database images
 # dir_path_database = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/server/obj"
@@ -75,9 +76,9 @@ print("Avg # feature per query object = ", avg_feature_qchild02.data(str(202))ue
 
 # 3 VOCABULARY TREE CONSTRUCTION
 # Assign document id to each descriptor and creating list of descriptors
+
 des_database_list = []
-#des_list = {}
-#l=0
+
 for i in range(50):
     for j in range (database_des[i].__len__()):
         des_database_list.append(keypoint_with_id(database_des[i].get_des(j), i))
@@ -86,4 +87,5 @@ for i in range(50):
 first_node = Tree(des_database_list)
 
 #building tree
-hi_kmeans(des_database_list, b)  #need to add depth
+hi_kmeans(first_node, des_database_list, b, depth)  #need to add depth
+root.nestedTree()
