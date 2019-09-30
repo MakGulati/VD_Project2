@@ -10,6 +10,8 @@ from treelib import *
 ## 2 IMAGE FEATURE EXTRACTION
 # (a) Extract few hundreds features from each database image and combine the ones for same object, avg n°features per database object
 
+n_documents = 50 # n of documents (buildings) presents in database
+n_queries = 50 # n of query images
 n_keypoints = 200  # strongest keypoints to keep
 b = 3 # n of brances (cluster) in each level of tree
 depth = 2 # n of levels of tree
@@ -21,7 +23,7 @@ dir_path_database = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT
 tot_features_database = 0  # counting total features of database for retrieving average
 des_database = {}  # dictionary of database objects containing descriptors
 
-for i in range(50):  # 250 images with 50 objects, 3 images per object read at time
+for i in range(n_documents):  # 250 images with 50 buildings (documents), 3 images per object read at time
     img1 = cv2.imread(dir_path_database + str(i + 1) + "_1.jpg", cv2.IMREAD_GRAYSCALE)
     sift = cv2.xfeatures2d.SIFT_create(n_keypoints)
     kp1, des1 = sift.detectAndCompute(img1, None)
@@ -60,7 +62,7 @@ dir_path_query ='Data2/client/obj'
 tot_features_query = 0 # counting total features of database for retrieving average
 des_query = {} # dictionary of query objects containing descriptors
 
-for i in range(50): # 50 query images
+for i in range(n_queries): # 50 query images
     img_i = cv2.imread(dir_path_query+str(i+1)+"_t1.jpg", cv2.IMREAD_GRAYSCALE)
 #   sift_i = cv2.xfeatures2d.SIFT_create(contrastThreshold = 0.19, edgeThreshold = 9.3)
     sift_i = cv2.xfeatures2d.SIFT_create(n_keypoints)
@@ -79,18 +81,22 @@ print("Avg # feature per query object = ", avg_feature_query_object)
 
 des_database_list = []
 
-for i in range(50):
+for i in range(n_documents):
     for j in range(des_database[i].__len__()):
         des_database_list.append(keypoint_with_id(des_database[i].get_des(j), i))
 
-#setting root of tree
+# setting root of tree
 first_node = Tree(des_database_list)
 
-#building tree
+# building tree
 hi_kmeans(first_node, des_database_list, b, depth)  # b is number of clusters, depth is number of levels
 
-#seeing data in tree
+# seeing data in tree
 am = first_node.getChildren()
 test = am[0].data
 
-first_node.prettyTree()
+# print tree
+first_node.nestedTree()
+
+# 4 QUERYING
+#

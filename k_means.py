@@ -18,6 +18,8 @@ def hi_kmeans(_first_node, _des_database_list, _b, _depth):  # need to add depth
     #print(len(kmeans_labels))
 
     clusters = [[] for i in range(_b)]
+    kmeans_centroids = kmeans.cluster_centers_
+    centroids = kmeans_centroids.tolist()
 
     '''
     for m in range(_b):
@@ -26,7 +28,7 @@ def hi_kmeans(_first_node, _des_database_list, _b, _depth):  # need to add depth
                 clusters[m].append(keypoint_with_id(x, _des_database_list[X.index(x)].id))
         # print ("m",len(clusters[m]))
 
-    # centers = kmeans.cluster_centers_
+    centroids  = kmeans.cluster_centers_
     '''
 
     for a in range(len(kmeans_labels)):  # total numbers of descriptors
@@ -40,12 +42,7 @@ def hi_kmeans(_first_node, _des_database_list, _b, _depth):  # need to add depth
     if _depth > 0:
         _depth -= 1
         for m in range(_b):
-            _child = Tree(clusters[m])
+            _child = Tree(clusters[m], centroids[m])
             _first_node.addChild(_child)
             hi_kmeans(_child, clusters[m], _b, _depth)
         # _first_node.nestedTree()
-
-    # plt.scatter(X_new[:, 0], X_new[:, 127], c=kmeans_labels, s=50, cmap='viridis')
-
-    # plt.scatter(centers[:, 0], centers[:, 127],c='red',alpha=0.9)
-    # plt.show()
