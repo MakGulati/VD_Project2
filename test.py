@@ -15,11 +15,11 @@ b = 3 # n of brances (cluster) in each level of tree
 depth = 2 # n of levels of tree
 
 # directory path with database images
-# dir_path_database = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/server/obj"
-dir_path_database = 'Data2/server/obj'
+dir_path_database = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/server/obj"
+#dir_path_database = 'Data2/server/obj'
 
 tot_features_database = 0  # counting total features of database for retrieving average
-database_des = {}  # dictionary of database objects containing descriptors
+des_database = {}  # dictionary of database objects containing descriptors
 
 for i in range(50):  # 250 images with 50 objects, 3 images per object read at time
     img1 = cv2.imread(dir_path_database + str(i + 1) + "_1.jpg", cv2.IMREAD_GRAYSCALE)
@@ -42,11 +42,11 @@ for i in range(50):  # 250 images with 50 objects, 3 images per object read at t
         m2 = np.delete(j, good, 0)  # removing matching features in same object
         des = np.vstack((des, m2))
 
-    database_des[i] = object(i + 1, des)
-    tot_features_database += database_des[i].__len__()
+    des_database[i] = keypoints_mat_with_id(i + 1, des)
+    tot_features_database += des_database[i].__len__()
 
 # avg n°feature extracted per database object
-avg_feature_database_object = tot_features_database / len(database_des)
+avg_feature_database_object = tot_features_database / len(des_database)
 print('Avg # feature per database object = ', avg_feature_database_object)
 
 
@@ -58,7 +58,7 @@ print('Avg # feature per database object = ', avg_feature_database_object)
 dir_path_query ='Data2/client/obj'
 
 tot_features_query = 0 # counting total features of database for retrieving average
-query_des = {} # dictionary of query objects containing descriptors
+des_query = {} # dictionary of query objects containing descriptors
 
 for i in range(50): # 50 query images
     img_i = cv2.imread(dir_path_query+str(i+1)+"_t1.jpg", cv2.IMREAD_GRAYSCALE)
@@ -66,12 +66,12 @@ for i in range(50): # 50 query images
     sift_i = cv2.xfeatures2d.SIFT_create(n_keypoints)
     kp_i, des_i = sift_i.detectAndCompute(img_i, None)
 
-    query_des[i] = object(i+1, des_i)
-    tot_features_query += query_des[i].__len__()
+    des_query[i] = keypoints_mat_with_id(i+1, des_i)
+    tot_features_query += des_query[i].__len__()
 
 # avg n°feature extracted per query object
-avg_feature_query_object = tot_features_query / len(query_des)
-print("Avg # feature per query object = ", avg_feature_qchild02.data(str(202))uery_object)
+avg_feature_query_object = tot_features_query / len(des_query)
+print("Avg # feature per query object = ", avg_feature_query_object)
 '''
 
 # 3 VOCABULARY TREE CONSTRUCTION
@@ -80,12 +80,15 @@ print("Avg # feature per query object = ", avg_feature_qchild02.data(str(202))ue
 des_database_list = []
 
 for i in range(50):
-    for j in range (database_des[i].__len__()):
-        des_database_list.append(keypoint_with_id(database_des[i].get_des(j), i))
+    for j in range(des_database[i].__len__()):
+        des_database_list.append(keypoint_with_id(des_database[i].get_des(j), i))
 
 #setting root of tree
 first_node = Tree(des_database_list)
 
 #building tree
-hi_kmeans(first_node, des_database_list, b, depth)  #need to add depth
-root.nestedTree()
+hi_kmeans(first_node, des_database_list, b, depth)  # b is number of clusters, depth is number of levels
+
+#seeing data in tree
+am = first_node.getChildren()
+test = am[0].data

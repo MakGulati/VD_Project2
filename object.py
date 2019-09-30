@@ -1,4 +1,4 @@
-class object():  # structure with list of SIFT keypoints per object with the object id
+class keypoints_mat_with_id():  # structure with matrix of SIFT keypoints per object with the object id
     def __init__(self, _obj_id, _des_mat):
         self.obj_id = _obj_id  # id of the object
         self.des_mat = _des_mat  # matrix of keypoints
@@ -11,6 +11,7 @@ class object():  # structure with list of SIFT keypoints per object with the obj
 
     def __del__(self):
         pass
+
 
 class keypoint_with_id():
     def __init__(self, _vector, _id):
