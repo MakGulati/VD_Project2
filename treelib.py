@@ -16,13 +16,13 @@ class Tree(object):
     '''
     
      
-    def __init__(self, data = None, children = None):
+    def __init__(self, data = None, _centroid = None, children = None):
         '''
         @param data: content of this node
         @param children: sub node(s) of Tree, could be None, child (single) or children (multiple)
         '''
         self.data = data
-        # self.centroid=sum(data)/50
+        self.centroid = _centroid
         # self.score=
         self.__children = []
         self.__parent = None  #private parent attribute
@@ -41,9 +41,7 @@ class Tree(object):
                         raise TypeError('Child of Tree should be a Tree type.')      
             else:
                 raise TypeError('Child of Tree should be a Tree type')
-    
-    # def compute_IDF(self,):
-        
+
     def __setattr__(self, name, value):
         
             
