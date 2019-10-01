@@ -7,13 +7,15 @@ from object import *
 from k_means import *
 from treelib import *
 from operator import add
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 ## 2 IMAGE FEATURE EXTRACTION
 # (a) Extract few hundreds features from each database image and combine the ones for same object, avg n°features per database object
 
 n_documents = 50 # n of documents (buildings) presents in database
 n_queries = 50 # n of query images
-n_keypoints = 400  # strongest keypoints to keep
+n_keypoints = 350  # strongest keypoints to keep 350
 nndr_thresh = 0.80 # thresh for nndr SIFT match
 
 # directory path with database images
@@ -86,21 +88,22 @@ for i in range(n_documents):
 parent_node = Tree(des_database_list)
 
 # building 1st tree (b=4, depth=3)
-b = 5 # n of branches (clusters) in each level of tree
-depth = 7 # n of levels of tree
+b = 4 # n of branches (clusters) in each level of tree
+depth = 5 # n of levels of tree
 hi_kmeans(parent_node, des_database_list, b, depth, n_documents)  # b is number of clusters, depth is number of levels
 
 print("Tree has been built! Now querying...")
 
 top1_first_tree = []
-counter = 0
+counter_t1 = 0
+counter_t5 = 0
 
 for i in range(n_queries):
     accu_list = [0 for s in range(n_documents)]
 
     for j in range(des_query[i].__len__()):
         tmp_parent_node = parent_node
-        print(j,'des')
+        # print(j,'des')
 
         for d in range(depth):
             first_tree = tmp_parent_node.getChildren()
@@ -124,16 +127,23 @@ for i in range(n_queries):
     # print('accum scores for image', i, '=', accu_list)
     # top1_first_tree.append(accu_list.index(max(accu_list))) # list of 50 elements (top1 for each query image)
     top1 = accu_list.index(max(accu_list))
+    top5 = sorted(accu_list,reverse=True)[:5]
     print('image ',i,' classified as image ', top1)
 
-    # if top1_first_tree[i] == i:
+
     if top1 == i: # image correctly classified?
-        counter += 1
+        counter_t1 += 1
         print('correct')
 
+    if i in top5:
+        counter_t5 += 1
+
 # avg top-1 recall rate
-avg_recall_rate = counter / n_queries
-print("Avg recall rate = ", avg_recall_rate)
+avg_recall_rate1 = counter_t1 / n_queries
+print("Avg recall rate_t1 = ", avg_recall_rate1)
+
+avg_recall_rate2 = counter_t5 / n_queries
+print("Avg recall rate_t5 = ", avg_recall_rate2)
 
 # first_tree_child_data = first_tree[0].data
 # second_tree_child_centroid = first_tree[1].centroid
