@@ -19,17 +19,7 @@ def hi_kmeans(_first_node, _des_database_list, _b, _depth, _n_documents):  # nee
     
         clusters = [[] for i in range(_b)]
         centroids = kmeans.cluster_centers_ # computing centroid for each cluster
-    
-        '''
-        for m in range(_b):
-            for x, y in zip(X_new, kmeans_labels):
-                if y == m:
-                    clusters[m].append(keypoint_with_id(x, _des_database_list[X.index(x)].id))
-            # print ("m",len(clusters[m]))
-    
-        centroids  = kmeans.cluster_centers_
-        '''
-    
+
         # populating the clusters labeled with the descritpors and corresponding id
         for a in range(len(kmeans_labels)):  # total numbers of descriptors
             tmp_list = []
@@ -46,8 +36,8 @@ def hi_kmeans(_first_node, _des_database_list, _b, _depth, _n_documents):  # nee
         for i in range(_b):
             for j in range(len(clusters[i])):
                 tmp_list_id[i].append(clusters[i][j].id)
-            print("hi")
-            print(set(tmp_list_id[0]))
+            # print("hi")
+            # print(set(tmp_list_id[0]))
             for k in range(_n_documents):
                 tf[i].append(tmp_list_id[i].count(k) / (len(clusters[i])))
             idf = log2(_n_documents / np.count_nonzero(tf[i])) # compute id
