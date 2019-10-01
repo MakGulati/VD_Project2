@@ -6,6 +6,7 @@ import cv2
 from object import *
 from k_means import *
 from treelib import *
+from operator import add
 
 ## 2 IMAGE FEATURE EXTRACTION
 # (a) Extract few hundreds features from each database image and combine the ones for same object, avg n°features per database object
@@ -13,13 +14,12 @@ from treelib import *
 n_documents = 50 # n of documents (buildings) presents in database
 n_queries = 50 # n of query images
 n_keypoints = 250  # strongest keypoints to keep
-b = 4 # n of brances (cluster) in each level of tree
-depth = 5 # n of levels of tree
 
 # directory path with database images
-# dir_path_database = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/server/obj"
-dir_path_database = 'Data2/server/obj'
+dir_path_database = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/server/obj"
+# dir_path_database = 'Data2/server/obj'
 
+# merging features for database images
 tot_features_database = 0  # counting total features of database for retrieving average
 des_database = {}  # dictionary of database objects containing descriptors
 
@@ -33,8 +33,7 @@ for i in range(n_documents):  # 250 images with 50 buildings (documents), 3 imag
     img3 = cv2.imread(dir_path_database + str(i + 1) + "_3.jpg", cv2.IMREAD_GRAYSCALE)
     kp3, des3 = sift.detectAndCompute(img3, None)
 
-
-    for j in [des2, des3]: #comparing same building images for removing redundant SIFT descritpors
+    for j in [des2, des3]: # comparing same building images for removing redundant SIFT descritpors
         bf = cv2.BFMatcher()
         matches = bf.knnMatch(des1, j, k=2)
         good = []
@@ -76,28 +75,60 @@ avg_feature_query_object = tot_features_query / len(des_query)
 print("Avg # feature per query object = ", avg_feature_query_object)
 '''
 
-# 3 VOCABULARY TREE CONSTRUCTION
-# Assign document id to each descriptor and creating list of descriptors
+# 3 VOCABULARY TREE CONSTRUCTION and 4 QUERYING
 
+# Assign document id to each descriptor and creating list of descriptors
 des_database_list = []
 
 for i in range(n_documents):
     for j in range(des_database[i].__len__()):
         des_database_list.append(keypoint_with_id(des_database[i].get_des(j), des_database[i].doc_id))
 
-# setting root of tree
-first_node = Tree(des_database_list)
+# setting root of tree (same for every tree)
+parent_node = Tree(des_database_list)
 
-# building tree
-hi_kmeans(first_node, des_database_list, b, depth, n_documents)  # b is number of clusters, depth is number of levels
+# building 1st tree (b=4, depth=3)
+b = 4 # n of branches (clusters) in each level of tree
+depth = 3 # n of levels of tree
+hi_kmeans(parent_node, des_database_list, b, depth, n_documents)  # b is number of clusters, depth is number of levels
 
 # seeing data in tree
-am = first_node.getChildren()
-test = am[0].data
-test2 = am[1].centroid
+#first_tree = parent_node.getChildren()
 
-# print tree
-#first_node.nestedTree()
+accu_list = []
+top1_first_tree = []
+for i in range(n_queries):
+    for j in range(des_query[i].__len__()):
+        for d in range(depth):
+            first_tree = parent_node.getChildren()
+            euclid_dist = []
+            for node in range(b):
+                euclid_dist.append(np.linalg.norm(des_query[i].get_des(j) - first_tree[node].centroid))
 
-# 4 QUERYING
-#
+            closer_child_index = euclid_dist.index(min(euclid_dist))
+            parent_node = first_tree[closer_child_index]
+
+        #summing up tfidf scores of leaf nodes
+        accu_list = list(map(add, accu_list, parent_node.tfidf_score)) # list of 50 elements (doc id)
+
+    top1_first_tree.append(accu_list.index(max(accu_list))) # list of 50 elements (top1 for each query image)
+
+
+# first_tree_child_data = first_tree[0].data
+# second_tree_child_centroid = first_tree[1].centroid
+
+
+# building 2nd tree (b=5, depth=4)
+# b = 5 # n of branches (clusters) in each level of tree
+# depth = 4 # n of levels of tree
+# hi_kmeans(parent_node, des_database_list, b, depth, n_documents)  # b is number of clusters, depth is number of levels
+
+# building 3rd tree (b=5, depth=7)
+# b = 5 # n of branches (clusters) in each level of tree
+# depth = 7 # n of levels of tree
+# hi_kmeans(parent_node, des_database_list, b, depth, n_documents)  # b is number of clusters, depth is number of levels
+
+
+
+
+
