@@ -13,7 +13,7 @@ from operator import add
 
 n_documents = 50 # n of documents (buildings) presents in database
 n_queries = 50 # n of query images
-n_keypoints = 350  # strongest keypoints to keep
+n_keypoints = 400  # strongest keypoints to keep
 nndr_thresh = 0.80 # thresh for nndr SIFT match
 
 # directory path with database images
@@ -86,8 +86,8 @@ for i in range(n_documents):
 parent_node = Tree(des_database_list)
 
 # building 1st tree (b=4, depth=3)
-b = 4 # n of branches (clusters) in each level of tree
-depth = 3 # n of levels of tree
+b = 5 # n of branches (clusters) in each level of tree
+depth = 7 # n of levels of tree
 hi_kmeans(parent_node, des_database_list, b, depth, n_documents)  # b is number of clusters, depth is number of levels
 
 print("Tree has been built! Now querying...")
@@ -100,6 +100,7 @@ for i in range(n_queries):
 
     for j in range(des_query[i].__len__()):
         tmp_parent_node = parent_node
+        print(j,'des')
 
         for d in range(depth):
             first_tree = tmp_parent_node.getChildren()
@@ -108,26 +109,27 @@ for i in range(n_queries):
                 euclid_dist =[]
                 for node in range(b):
                     euclid_dist.append(np.linalg.norm(des_query[i].get_des(j) - np.array(first_tree[node].centroid)))
-                print(euclid_dist)
+                # print(euclid_dist)
 
                 closer_child_index = euclid_dist.index(min(euclid_dist))
-                print(closer_child_index)
+                # print(closer_child_index)
                 tmp_parent_node = first_tree[closer_child_index]
 
         # summing up tfidf scores of leaf nodes
         # accu_list = list(map(add, accu_list, parent_node.tfidf_score)) # list of 50 elements (doc id)
         best_leaf_node = tmp_parent_node
         accu_list = (np.add(accu_list, best_leaf_node.tfidf_score)) # list of 50 elements (doc id)
-        accu_list=accu_list.tolist()
+        accu_list = accu_list.tolist()
 
-    print('accum scores for image', i, '=', accu_list)
+    # print('accum scores for image', i, '=', accu_list)
     # top1_first_tree.append(accu_list.index(max(accu_list))) # list of 50 elements (top1 for each query image)
     top1 = accu_list.index(max(accu_list))
-    print('classified as image ', top1+1)
+    print('image ',i,' classified as image ', top1)
 
     # if top1_first_tree[i] == i:
     if top1 == i: # image correctly classified?
         counter += 1
+        print('correct')
 
 # avg top-1 recall rate
 avg_recall_rate = counter / n_queries
