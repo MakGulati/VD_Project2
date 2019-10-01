@@ -13,7 +13,7 @@ from operator import add
 
 n_documents = 50 # n of documents (buildings) presents in database
 n_queries = 50 # n of query images
-n_keypoints = 250  # strongest keypoints to keep
+n_keypoints = 300  # strongest keypoints to keep
 nndr_thresh = 0.80 # thresh for nndr SIFT match
 
 # directory path with database images

@@ -13,18 +13,18 @@ def hi_kmeans(_first_node, _des_database_list, _b, _depth, _n_documents):  # nee
 
     descriptors_new = np.array(descriptors) # transform list to np array for kmeans
     
-    if (len(descriptors) > _b):
+    if len(descriptors) > _b:  # do the clustering and then the recursive one only if you have at least one more vector than n of branches
         kmeans = KMeans(n_clusters=_b, random_state=0).fit(descriptors_new) # kmeans clustering algorithm
         kmeans_labels = kmeans.labels_ # obtaining the labels of the clusters
     
         clusters = [[] for i in range(_b)]
-        centroids = kmeans.cluster_centers_ # computing centroid for each cluster
+        centroids = kmeans.cluster_centers_  # computing centroid for each cluster
 
         # populating the clusters labeled with the descritpors and corresponding id
         for a in range(len(kmeans_labels)):  # total numbers of descriptors
             tmp_list = []
-            if len(clusters[kmeans_labels[a]]) > 0: #if you have already elements in that cluster
-                tmp_list.extend(clusters[kmeans_labels[a]]) # extend because want to append each elements instead of appending the list 
+            if len(clusters[kmeans_labels[a]]) > 0:  # if you have already elements in that cluster
+                tmp_list.extend(clusters[kmeans_labels[a]])  # extend because want to append each elements instead of appending the list
             tmp_list.append(keypoint_with_id(_des_database_list[a].vector, _des_database_list[a].id))
             clusters[kmeans_labels[a]] = tmp_list
     
@@ -36,18 +36,17 @@ def hi_kmeans(_first_node, _des_database_list, _b, _depth, _n_documents):  # nee
         for i in range(_b):
             for j in range(len(clusters[i])):
                 tmp_list_id[i].append(clusters[i][j].id)
-            # print("hi")
-            # print(set(tmp_list_id[0]))
+
             for k in range(_n_documents):
                 tf[i].append(tmp_list_id[i].count(k) / (len(clusters[i])))
-            idf = log2(_n_documents / np.count_nonzero(tf[i])) # compute id
+            idf = log2(_n_documents / np.count_nonzero(tf[i]))  # compute id
             tfidf_scores[i] = (np.array(tf[i]) * idf).tolist()
-    
     
         # build tree with recursive method
         if _depth > 0: # only if there is still depth
             _depth -= 1
+
             for m in range(_b):
-                _child = Tree(clusters[m], centroids[m], tfidf_scores[m]) # child
-                _first_node.addChild(_child) # adding the child to the parent
-                hi_kmeans(_child, clusters[m], _b, _depth,_n_documents) # kmeans clustering on each child
+                _child = Tree(clusters[m], centroids[m], tfidf_scores[m])  # child
+                _first_node.addChild(_child)  # adding the child to the parent
+                hi_kmeans(_child, clusters[m], _b, _depth,_n_documents)  # kmeans clustering on each child
