@@ -16,8 +16,8 @@ n_queries = 50 # n of query images
 n_keypoints = 250  # strongest keypoints to keep
 
 # directory path with database images
-# dir_path_database = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/server/obj"
-dir_path_database = 'Data2/server/obj'
+dir_path_database = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/server/obj"
+# dir_path_database = 'Data2/server/obj'
 
 # merging features for database images
 tot_features_database = 0  # counting total features of database for retrieving average
@@ -55,15 +55,14 @@ print('Avg # feature per database object = ', avg_feature_database_object)
 # (b) Extract few hundreds features from each query image and save them separately, avg n°features per query object
 
 # directory path with query images
-# dir_path_query = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/client/obj"
-dir_path_query ='Data2/client/obj'
+dir_path_query = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/client/obj"
+# dir_path_query ='Data2/client/obj'
 
 tot_features_query = 0 # counting total features of database for retrieving average
 des_query = {} # dictionary of query objects containing descriptors
 
 for i in range(n_queries): # 50 query images
     img_i = cv2.imread(dir_path_query+str(i+1)+"_t1.jpg", cv2.IMREAD_GRAYSCALE)
-#   sift_i = cv2.xfeatures2d.SIFT_create(contrastThreshold = 0.19, edgeThreshold = 9.3)
     sift_i = cv2.xfeatures2d.SIFT_create(n_keypoints)
     kp_i, des_i = sift_i.detectAndCompute(img_i, None)
 
@@ -101,12 +100,14 @@ for i in range(n_queries):
     for j in range(des_query[i].__len__()):
         print(des_query[i].get_des(j))
         print("hi")
-        print(type(des_query[i].get_des(j)))
+        print('des', type(des_query[i].get_des(j)))
         for d in range(depth):
             first_tree = parent_node.getChildren()
             euclid_dist = []
             for node in range(b):
-                euclid_dist.append(np.linalg.norm(des_query[i].get_des(j) - np.array(first_tree[node].centroid) ))
+                center = np.array(first_tree[node].centroid)
+                print('center', type(center))
+                euclid_dist.append(np.linalg.norm(des_query[i].get_des(j) - center))
 
             closer_child_index = euclid_dist.index(min(euclid_dist))
             parent_node = first_tree[closer_child_index]
