@@ -16,14 +16,14 @@ class Tree(object):
     '''
     
      
-    def __init__(self, data = None, _centroid = None, _score = None, children = None):
+    def __init__(self, data = None, _centroid = None, _tfidf_score = None, children = None):
         '''
         @param data: content of this node
         @param children: sub node(s) of Tree, could be None, child (single) or children (multiple)
         '''
         self.data = data #list of keypoints in the node (cluster) with respective document id
         self.centroid = _centroid #128 vector centroid of the cluster
-        self.score = _score
+        self.tfidf_score = _tfidf_score
         self.__children = []
         self.__parent = None  #private parent attribute
         
