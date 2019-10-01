@@ -13,7 +13,7 @@ from operator import add
 
 n_documents = 50 # n of documents (buildings) presents in database
 n_queries = 50 # n of query images
-n_keypoints = 300  # strongest keypoints to keep
+n_keypoints = 350  # strongest keypoints to keep
 nndr_thresh = 0.80 # thresh for nndr SIFT match
 
 # directory path with database images
@@ -86,15 +86,16 @@ for i in range(n_documents):
 parent_node = Tree(des_database_list)
 
 # building 1st tree (b=4, depth=3)
-b = 4 # n of branches (clusters) in each level of tree
-depth = 5 # n of levels of tree
+b = 5 # n of branches (clusters) in each level of tree
+depth = 7 # n of levels of tree
 hi_kmeans(parent_node, des_database_list, b, depth, n_documents)  # b is number of clusters, depth is number of levels
 
-accu_list = [0  for i in range(n_documents)]
+print("Tree has been built! Now querying...")
+
+accu_list = [0 for i in range(n_documents)]
 top1_first_tree = []
 counter = 0
 
-#for fun in range(5):
 for i in range(n_queries):
     for j in range(des_query[i].__len__()):
         for d in range(depth):
