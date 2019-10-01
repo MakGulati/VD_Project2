@@ -14,10 +14,11 @@ from operator import add
 n_documents = 50 # n of documents (buildings) presents in database
 n_queries = 50 # n of query images
 n_keypoints = 250  # strongest keypoints to keep
+nndr_thresh = 0.80 # thresh for nndr SIFT match
 
 # directory path with database images
-# dir_path_database = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/server/obj"
-dir_path_database = 'Data2/server/obj'
+dir_path_database = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/server/obj"
+# dir_path_database = 'Data2/server/obj'
 
 # merging features for database images
 tot_features_database = 0  # counting total features of database for retrieving average
@@ -38,7 +39,7 @@ for i in range(n_documents):  # 250 images with 50 buildings (documents), 3 imag
         matches = bf.knnMatch(des1, j, k=2)
         good = []
         for m, n in matches:
-            if m.distance < 0.80 * n.distance:  # if it is a match
+            if m.distance < nndr_thresh * n.distance:  # if it is a match
                 good.append(m.queryIdx)  # saving index for removing it
         m2 = np.delete(j, good, 0)  # removing matching features in same object
         des = np.vstack((des, m2))
@@ -51,12 +52,11 @@ avg_feature_database_object = tot_features_database / len(des_database)
 print('Avg # feature per database object = ', avg_feature_database_object)
 
 
-
 # (b) Extract few hundreds features from each query image and save them separately, avg n°features per query object
 
 # directory path with query images
-# dir_path_query = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/client/obj"
-dir_path_query ='Data2/client/obj'
+dir_path_query = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/client/obj"
+# dir_path_query ='Data2/client/obj'
 
 tot_features_query = 0 # counting total features of database for retrieving average
 des_query = {} # dictionary of query objects containing descriptors
@@ -72,7 +72,6 @@ for i in range(n_queries): # 50 query images
 # avg n°feature extracted per query object
 avg_feature_query_object = tot_features_query / len(des_query)
 print("Avg # feature per query object = ", avg_feature_query_object)
-
 
 # 3 VOCABULARY TREE CONSTRUCTION and 4 QUERYING
 
@@ -91,9 +90,6 @@ b = 4 # n of branches (clusters) in each level of tree
 depth = 3 # n of levels of tree
 hi_kmeans(parent_node, des_database_list, b, depth, n_documents)  # b is number of clusters, depth is number of levels
 
-# seeing data in tree
-#first_tree = parent_node.getChildren()
-
 accu_list = [0  for i in range(n_documents)]
 top1_first_tree = []
 counter = 0
@@ -104,7 +100,7 @@ for fun in range(5):
             for d in range(depth):
                 first_tree = parent_node.getChildren()
 
-                if( len(first_tree) != 0):
+                if len(first_tree) != 0:
                     euclid_dist = []
                     for node in range(b):
                         euclid_dist.append(np.linalg.norm(des_query[i].get_des(j) - np.array(first_tree[node].centroid)))
@@ -112,16 +108,20 @@ for fun in range(5):
                     closer_child_index = euclid_dist.index(min(euclid_dist))
                     parent_node = first_tree[closer_child_index]
 
-            #summing up tfidf scores of leaf nodes
+            # summing up tfidf scores of leaf nodes
             # accu_list = list(map(add, accu_list, parent_node.tfidf_score)) # list of 50 elements (doc id)
-            accu_list = np.add(accu_list, parent_node.tfidf_score) # list of 50 elements (doc id)
+            accu_list = (np.add(accu_list, parent_node.tfidf_score)).tolist() # list of 50 elements (doc id)
 
-        print('image', i, '=', accu_list)
-        top1_first_tree.append(accu_list.index(max(accu_list))) # list of 50 elements (top1 for each query image)
-        if top1_first_tree[i] == i:
+        print('accum scores for image', i, '=', accu_list)
+        # top1_first_tree.append(accu_list.index(max(accu_list))) # list of 50 elements (top1 for each query image)
+        top1 = accu_list.index(max(accu_list))
+        print('classified as image ', top1)
+
+        # if top1_first_tree[i] == i:
+        if top1 == i:
             counter += 1
 
-    avg_recall_rate = counter/n_queries
+    avg_recall_rate = counter / n_queries
     print("Avg recall rate = ", avg_recall_rate)
 
 # first_tree_child_data = first_tree[0].data
