@@ -5,9 +5,9 @@ from treelib import *
 from math import *
 
 
-def hi_kmeans(_first_node, _des_database_list, _b, _depth, _n_documents):  # need to add depth
+def hi_kmeans(_first_node, _des_database_list, _b, _depth, _n_documents):
 
-    descriptors = []
+    descriptors = []  # putting in a list the descritpor 128 vectors
     for i in range(len(_des_database_list)):
         descriptors.append(_des_database_list[i].vector)
 
@@ -38,8 +38,16 @@ def hi_kmeans(_first_node, _des_database_list, _b, _depth, _n_documents):  # nee
                 tmp_list_id[i].append(clusters[i][j].id)
 
             for k in range(_n_documents):
-                tf[i].append(tmp_list_id[i].count(k) / (len(clusters[i])))
-            idf = log2(_n_documents / np.count_nonzero(tf[i]))  # compute id
+                try:
+                    tf[i].append(tmp_list_id[i].count(k) / (len(clusters[i])))
+                except ZeroDivisionError as err:
+                    tf[i].append(0)
+
+            try:
+                idf = log2(_n_documents / np.count_nonzero(tf[i]))  # compute id
+            except ZeroDivisionError as err:
+                idf = 0
+
             tfidf_scores[i] = (np.array(tf[i]) * idf).tolist()
     
         # build tree with recursive method

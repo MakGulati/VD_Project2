@@ -88,8 +88,8 @@ for i in range(n_documents):
 parent_node = Tree(des_database_list)
 
 # building 1st tree (b=4, depth=3)
-b = 4 # n of branches (clusters) in each level of tree
-depth = 3 # n of levels of tree
+b = 5 # n of branches (clusters) in each level of tree
+depth = 7 # n of levels of tree
 hi_kmeans(parent_node, des_database_list, b, depth, n_documents)  # b is number of clusters, depth is number of levels
 
 print("Tree has been built! Now querying...")
