@@ -63,11 +63,11 @@ dir_path_query = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02
 tot_features_query = 0  # counting total features of database for retrieving average
 des_query = {}  # dictionary of query objects containing descriptors
 
-factors = [1, 0.9, 0.7, 0.5]
+factors = [1, 0.9, 0.7, 0.5]  # to feed the vocabulary with less number of SIFT descriptors (90%, 70% and 50%)
 
-for i in range(n_queries): # 50 query images
-    img_i = cv2.imread(dir_path_query+str(i+1)+"_t1.jpg", cv2.IMREAD_GRAYSCALE)
-    sift_i = cv2.xfeatures2d.SIFT_create(factors[0] * n_keypoints)
+for i in range(n_queries):  # 50 query images
+    img_i = cv2.imread(dir_path_query + str(i + 1) + "_t1.jpg", cv2.IMREAD_GRAYSCALE)
+    sift_i = cv2.xfeatures2d.SIFT_create(int(round(factors[0] * n_keypoints)))
     kp_i, des_i = sift_i.detectAndCompute(img_i, None)
 
     des_query[i] = keypoints_mat_with_id(des_i, i)
@@ -90,8 +90,8 @@ for i in range(n_documents):
 parent_node = Tree(des_database_list)
 
 # building 1st tree (b=4, depth=3)
-b = 5 # n of branches (clusters) in each level of tree
-depth = 7 # n of levels of tree
+b = 4  # n of branches (clusters) in each level of tree
+depth = 5  # n of levels of tree
 hi_kmeans(parent_node, des_database_list, b, depth, n_documents)  # b is number of clusters, depth is number of levels
 
 print("Tree has been built! Now querying...")
@@ -130,15 +130,15 @@ for i in range(n_queries):
     # print(accu_list)
     top1 = accu_list.index(max(accu_list))
     # print('top1 ',top1)
-    top5_items = sorted(accu_list,reverse=True)[:5]
+    top5_items = sorted(accu_list, reverse=True)[:5]
     for p in range(5):
         top5.append(accu_list.index(top5_items[p]))
-    print('image ', i,'top5 ',top5)
-    print('image ', i,' classified as image ', top1)
+    # print('image ', i, 'top5 ', top5)
+    # print('image ', i, ' classified as image ', top1)
 
     if top1 == i: # image correctly classified?
         counter_t1 += 1
-        print('correct')
+        # print('correct')
 
     if i in top5:
         counter_t5 += 1
