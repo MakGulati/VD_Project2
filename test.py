@@ -100,7 +100,7 @@ counter_t5 = 0
 
 for i in range(n_queries):
     accu_list = [0 for s in range(n_documents)]
-
+    top5=[]
     for j in range(des_query[i].__len__()):
         tmp_parent_node = parent_node
         # print(j,'des')
@@ -126,8 +126,13 @@ for i in range(n_queries):
 
     # print('accum scores for image', i, '=', accu_list)
     # top1_first_tree.append(accu_list.index(max(accu_list))) # list of 50 elements (top1 for each query image)
+    print(accu_list)
     top1 = accu_list.index(max(accu_list))
-    top5 = sorted(accu_list,reverse=True)[:5]
+    print('top1 ',top1)
+    top5_items = sorted(accu_list,reverse=True)[:5]
+    for p in range(5):
+        top5.append(accu_list.index(top5_items[p]))
+    print('top5 ',top5)
     print('image ',i,' classified as image ', top1)
 
 
