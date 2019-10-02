@@ -1,13 +1,13 @@
 from sklearn.cluster import KMeans
 import numpy as np
-from object import *
+from classes import *
 from treelib import *
 from math import *
 
 
 def hi_kmeans(_first_node, _des_database_list, _b, _depth, _n_documents):
 
-    descriptors = []  # putting in a list the descritpor 128 vectors
+    descriptors = []  # putting in a list the descriptor 128 vectors
     for i in range(len(_des_database_list)):
         descriptors.append(_des_database_list[i].vector)
 
@@ -20,7 +20,7 @@ def hi_kmeans(_first_node, _des_database_list, _b, _depth, _n_documents):
         clusters = [[] for i in range(_b)]
         centroids = kmeans.cluster_centers_  # computing centroid for each cluster
 
-        # populating the clusters labeled with the descritpors and corresponding id
+        # populating the clusters labeled with the descriptors and corresponding id
         for a in range(len(kmeans_labels)):  # total numbers of descriptors
             tmp_list = []
             if len(clusters[kmeans_labels[a]]) > 0:  # if you have already elements in that cluster

@@ -1,12 +1,9 @@
 ## ASVD - PROJECT 2 - September 2019
 ## Mayank Gulati & Federico Favia
 
-import numpy as np
 import cv2
-from object import *
-from k_means import *
+from hi_k_means import *
 from treelib import *
-from operator import add
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning) #remove DeprecationWarning
 
@@ -19,8 +16,8 @@ n_keypoints = 350  # strongest keypoints to keep 350
 nndr_thresh = 0.80  # thresh for nndr SIFT match
 
 # directory path with database images
-dir_path_database = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/server/obj"
-# dir_path_database = 'Data2/server/obj'
+# dir_path_database = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/server/obj"
+dir_path_database = 'Data2/server/obj'
 
 # merging features for database images
 tot_features_database = 0  # counting total features of database for retrieving average
@@ -57,8 +54,8 @@ print('Avg # feature per database object = ', avg_feature_database_object)
 # (b) Extract few hundreds features from each query image and save them separately, avg n°features per query object
 
 # directory path with query images
-dir_path_query = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/client/obj"
-# dir_path_query ='Data2/client/obj'
+# dir_path_query = "D:/Federico/Documents/Federico/Uni Trento/03 Magistrale EIT/02 EIT VCC 2019-20/1st period/Analysis and Search of Visual Data EQ2425/Projects/Project 2/Data2/client/obj"
+dir_path_query ='Data2/client/obj'
 
 tot_features_query = 0  # counting total features of database for retrieving average
 des_query = {}  # dictionary of query objects containing descriptors
@@ -104,7 +101,6 @@ for i in range(n_queries):
     top5=[]
     for j in range(des_query[i].__len__()):
         tmp_parent_node = parent_node
-        # print(j,'des')
 
         for d in range(depth):
             first_tree = tmp_parent_node.getChildren()
@@ -113,10 +109,8 @@ for i in range(n_queries):
                 euclid_dist =[]
                 for node in range(b):
                     euclid_dist.append(np.linalg.norm(des_query[i].get_des(j) - np.array(first_tree[node].centroid)))
-                # print(euclid_dist)
 
                 closer_child_index = euclid_dist.index(min(euclid_dist))
-                # print(closer_child_index)
                 tmp_parent_node = first_tree[closer_child_index]
 
         # summing up tfidf scores of leaf nodes
@@ -125,20 +119,14 @@ for i in range(n_queries):
         accu_list = (np.add(accu_list, best_leaf_node.tfidf_score)) # list of 50 elements (doc id)
         accu_list = accu_list.tolist()
 
-    # print('accum scores for image', i, '=', accu_list)
-    # top1_first_tree.append(accu_list.index(max(accu_list))) # list of 50 elements (top1 for each query image)
-    # print(accu_list)
     top1 = accu_list.index(max(accu_list))
-    # print('top1 ',top1)
     top5_items = sorted(accu_list, reverse=True)[:5]
     for p in range(5):
         top5.append(accu_list.index(top5_items[p]))
-    # print('image ', i, 'top5 ', top5)
-    # print('image ', i, ' classified as image ', top1)
+
 
     if top1 == i: # image correctly classified?
         counter_t1 += 1
-        # print('correct')
 
     if i in top5:
         counter_t5 += 1
