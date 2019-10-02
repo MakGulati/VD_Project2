@@ -8,7 +8,7 @@ from k_means import *
 from treelib import *
 from operator import add
 import warnings
-warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=DeprecationWarning) #remove DeprecationWarning
 
 ## 2 IMAGE FEATURE EXTRACTION
 # (a) Extract few hundreds features from each database image and combine the ones for same object, avg n°features per database object
@@ -89,7 +89,7 @@ parent_node = Tree(des_database_list)
 
 # building 1st tree (b=4, depth=3)
 b = 4 # n of branches (clusters) in each level of tree
-depth = 5 # n of levels of tree
+depth = 3 # n of levels of tree
 hi_kmeans(parent_node, des_database_list, b, depth, n_documents)  # b is number of clusters, depth is number of levels
 
 print("Tree has been built! Now querying...")
@@ -126,13 +126,13 @@ for i in range(n_queries):
 
     # print('accum scores for image', i, '=', accu_list)
     # top1_first_tree.append(accu_list.index(max(accu_list))) # list of 50 elements (top1 for each query image)
-    print(accu_list)
+    # print(accu_list)
     top1 = accu_list.index(max(accu_list))
-    print('top1 ',top1)
+    # print('top1 ',top1)
     top5_items = sorted(accu_list,reverse=True)[:5]
     for p in range(5):
         top5.append(accu_list.index(top5_items[p]))
-    print('top5 ',top5)
+    print('image ',i,'top5 ',top5)
     print('image ',i,' classified as image ', top1)
 
 
